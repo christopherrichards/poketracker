@@ -1,0 +1,11 @@
+{% load static %}
+<center>
+
+{% for pokemon in pokemon_list %}
+    <img src = "{% static 'images/pokemon/'%}{{ pokemon.id }}.png">
+    <br>
+    <a href="{% url 'poketracker:detail' pokemon.id %}">{{ pokemon.name }}</a>
+    <p>
+{% endfor %}
+
+</center>
