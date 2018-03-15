@@ -20,9 +20,19 @@ class Command(BaseCommand):
 
             i = 1
             for row in pokemon_reader:
-                new_pokemon = Pokemon(id=i, name=row[0])
+                new_pokemon = Pokemon(id=i, name=row[0], evolvesFrom=row[1],
+                                      candiesToEvolve=row[2])
                 new_pokemon.save()
                 msg = "Added " + new_pokemon.name.decode('utf-8') + \
                     " to Pokemon database (#" + str(i) + ")"
                 self.stdout.write(msg)
                 i += 1
+
+        for pokemon in Pokemon.objects.all():
+            if(pokemon.evolvesFrom != 0):
+                ancestor = Pokemon.objects.all().filter(pk=pokemon.
+                                                        evolvesFrom).first()
+                pokemon.evolvesFromName = ancestor.name
+                pokemon.save()
+                self.stdout.write(pokemon.name + " evolves from " +
+                                  pokemon.evolvesFromName)
