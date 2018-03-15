@@ -10,11 +10,13 @@
 {% else %}
 (Uncaught)
 {% endif %}
+<br>
+You have {{ pokemon.numInBag }} of these in your bag.
 {% if pokemon.evolvesFrom != 0 %}
     <br>
     Evolves From: <a href="{% url 'poketracker:detail' pokemon.evolvesFrom %}">#{{ pokemon.evolvesFrom }} {{ pokemon.evolvesFromName }}</a>
     <br>
-    Requires {{ pokemon.candiesToEvolve }} Candies
+    You have {{ pokemon.numCandies }} of {{ pokemon.candiesToEvolve }} required candies.
 {% endif %}
 
 </center>
