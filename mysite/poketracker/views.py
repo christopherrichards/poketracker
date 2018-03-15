@@ -1,5 +1,15 @@
-from django.http import HttpResponse
+from django.views import generic
+
+from .models import Pokemon
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the poketracker index.")
+class IndexView(generic.ListView):
+    template_name = 'poketracker/index.html'
+
+    def get_queryset(self):
+        return Pokemon.objects.all()
+
+
+class DetailView(generic.DetailView):
+    model = Pokemon
+    template_name = 'poketracker/detail.html'
