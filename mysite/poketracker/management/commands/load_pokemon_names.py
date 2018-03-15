@@ -15,6 +15,8 @@ class Command(BaseCommand):
 
         PROJECT_ROOT = os.path.abspath(os.path.dirname(__name__))
         pokemon_names = PROJECT_ROOT + '/poketracker/static/pokemon.csv'
+        gamestate = PROJECT_ROOT + '/poketracker/static/gamestate.csv'
+
         with open(pokemon_names) as csv_file:
             pokemon_reader = csv.reader(csv_file)
 
@@ -36,3 +38,15 @@ class Command(BaseCommand):
                 pokemon.save()
                 self.stdout.write(pokemon.name + " evolves from " +
                                   pokemon.evolvesFromName)
+
+        with open(gamestate) as csv_file:
+            gamestate_reader = csv.reader(csv_file)
+
+            i = 1
+            for row in gamestate_reader:
+                if(row[0] == "TRUE"):
+                    caught_pokemon = Pokemon.objects.all().filter(pk=i).first()
+                    caught_pokemon.caught = True
+                    caught_pokemon.save()
+                    self.stdout.write(caught_pokemon.name + " caught")
+                i += 1

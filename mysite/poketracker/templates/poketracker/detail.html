@@ -4,6 +4,12 @@
 <img src = "{% static 'images/pokemon/'%}{{ pokemon.id }}.png">
 <br>
 #{{ pokemon.id }} {{ pokemon.name }}
+<br>
+{% if pokemon.caught %}
+(Caught)
+{% else %}
+(Uncaught)
+{% endif %}
 {% if pokemon.evolvesFrom != 0 %}
     <br>
     Evolves From: <a href="{% url 'poketracker:detail' pokemon.evolvesFrom %}">#{{ pokemon.evolvesFrom }} {{ pokemon.evolvesFromName }}</a>
