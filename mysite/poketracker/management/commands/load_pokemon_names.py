@@ -22,22 +22,31 @@ class Command(BaseCommand):
 
             i = 1
             for row in pokemon_reader:
-                new_pokemon = Pokemon(id=i, name=row[0], evolvesFrom=row[1],
-                                      candiesToEvolve=row[2])
-                new_pokemon.save()
+                new_pokemon = Pokemon.objects.create(
+                    id=i,
+                    name=row[0],
+                    candiesToEvolve=row[2]
+                )
                 msg = "Added " + new_pokemon.name.decode('utf-8') + \
                     " to Pokemon database (#" + str(i) + ")"
                 self.stdout.write(msg)
                 i += 1
 
-        for pokemon in Pokemon.objects.all():
-            if(pokemon.evolvesFrom != 0):
-                ancestor = Pokemon.objects.all().filter(pk=pokemon.
-                                                        evolvesFrom).first()
-                pokemon.evolvesFromName = ancestor.name
-                pokemon.save()
-                self.stdout.write(pokemon.name + " evolves from " +
-                                  pokemon.evolvesFromName)
+# have to do 2 passes because for example, Pikachu evolves from Pichu
+        with open(pokemon_names) as csv_file:
+            pokemon_reader = csv.reader(csv_file)
+
+            i = 1
+            for row in pokemon_reader:
+                if(row[1]) != "0":
+                    new_pokemon = Pokemon.objects.get(pk=i)
+                    new_pokemon.evolvesFrom =\
+                        Pokemon.objects.get(pk=int(row[1]))
+                    new_pokemon.save()
+                    msg = new_pokemon.name.decode('utf-8') + \
+                        " evolves from " + new_pokemon.evolvesFrom.name
+                    self.stdout.write(msg)
+                i += 1
 
         with open(gamestate) as csv_file:
             gamestate_reader = csv.reader(csv_file)
@@ -45,20 +54,21 @@ class Command(BaseCommand):
             i = 1
             for row in gamestate_reader:
                 if(row[0] == "TRUE"):
-                    caught_pokemon = Pokemon.objects.all().filter(pk=i).first()
+                    caught_pokemon = Pokemon.objects.get(pk=i)
                     caught_pokemon.caught = True
                     caught_pokemon.save()
                     self.stdout.write(caught_pokemon.name + " caught")
                 if(row[1] != 0):
-                    bagged_pokemon = Pokemon.objects.all().filter(pk=i).first()
+                    bagged_pokemon = Pokemon.objects.get(pk=i)
                     bagged_pokemon.numInBag = row[1]
                     bagged_pokemon.save()
                     self.stdout.write(bagged_pokemon.numInBag + " " +
                                       bagged_pokemon.name + " in bag")
                 if(row[2] != 0):
-                    candy_pokemon = Pokemon.objects.all().filter(pk=i).first()
+                    candy_pokemon = Pokemon.objects.get(pk=i)
                     candy_pokemon.numCandies = row[2]
                     candy_pokemon.save()
                     self.stdout.write(candy_pokemon.numCandies + " " +
-                                      candy_pokemon.name + " candies in bag")
+                                      candy_pokemon.name +
+                                      " candies in bag")
                 i += 1
