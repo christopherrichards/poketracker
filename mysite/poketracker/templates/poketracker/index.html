@@ -15,7 +15,7 @@
     You have {{ pokemon.numInBag }} of these in your bag.
     {% if pokemon.evolvesFrom != null %}
         <br>
-        Evolves From: <a href="{% url 'poketracker:detail' pokemon.evolvesFrom.id %}">#{{ pokemon.evolvesFrom.id }} {{ pokemon.evolvesFrom.name }}</a>
+        Evolves From: <a href="{% url 'poketracker:detail' pokemon.evolvesFrom.id %}">#{{ pokemon.evolvesFrom.id }} {{ pokemon.evolvesFrom.name }}</a> ({{ pokemon.evolvesFrom.numInBag }} in your bag)
         <br>
         You have {{ pokemon.numCandies }} of {{ pokemon.candiesToEvolve }} required candies.
     {% endif %}

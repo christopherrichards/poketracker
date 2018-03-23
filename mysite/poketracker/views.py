@@ -25,13 +25,24 @@ class UncaughtView(generic.ListView):
         return Pokemon.objects.all().filter(caught=False)
 
 
+class EvolveView(generic.ListView):
+    template_name = 'poketracker/index.html'
+
+    def get_queryset(self):
+        return Pokemon.objects.all().filter(
+            numCandies__gte=F('candiesToEvolve'),
+            evolvesFrom__numInBag__gte=1
+        )
+
+
 class EvolveNewView(generic.ListView):
     template_name = 'poketracker/index.html'
 
     def get_queryset(self):
         return Pokemon.objects.all().filter(
             caught=False,
-            numCandies__gt=F('candiesToEvolve')
+            numCandies__gte=F('candiesToEvolve'),
+            evolvesFrom__numInBag__gte=1
         )
 
 
