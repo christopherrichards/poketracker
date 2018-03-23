@@ -22,7 +22,7 @@ class Command(BaseCommand):
 
             i = 1
             for row in pokemon_reader:
-                new_pokemon = Pokemon(id=i, name=row[0], evolvesFrom=row[1],
+                new_pokemon = Pokemon(id=i, name=row[0],
                                       candiesToEvolve=row[2])
                 new_pokemon.save()
                 msg = "Added " + new_pokemon.name.decode('utf-8') + \
@@ -30,14 +30,20 @@ class Command(BaseCommand):
                 self.stdout.write(msg)
                 i += 1
 
-        for pokemon in Pokemon.objects.all():
-            if(pokemon.evolvesFrom != 0):
-                ancestor = Pokemon.objects.all().filter(pk=pokemon.
-                                                        evolvesFrom).first()
-                pokemon.evolvesFromName = ancestor.name
-                pokemon.save()
-                self.stdout.write(pokemon.name + " evolves from " +
-                                  pokemon.evolvesFromName)
+        with open(pokemon_names) as csv_file:
+            pokemon_reader = csv.reader(csv_file)
+
+            i = 1
+            for row in pokemon_reader:
+                if(row[1]) != "0":
+                    new_pokemon = Pokemon(id=i, name=row[0],
+                                          evolvesFrom=Pokemon.objects.all().filter(pk=int(row[1])).first(),
+                                          candiesToEvolve=row[2])
+                    new_pokemon.save()
+                    msg = new_pokemon.name.decode('utf-8') + \
+                        " evolves from " + new_pokemon.evolvesFrom.name
+                    self.stdout.write(msg)
+                i += 1
 
         with open(gamestate) as csv_file:
             gamestate_reader = csv.reader(csv_file)
