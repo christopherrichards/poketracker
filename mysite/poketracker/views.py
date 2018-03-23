@@ -29,7 +29,10 @@ class EvolveNewView(generic.ListView):
     template_name = 'poketracker/index.html'
 
     def get_queryset(self):
-        return Pokemon.objects.all().filter(caught=False, numCandies__gt=F('candiesToEvolve'))
+        return Pokemon.objects.all().filter(
+            caught=False,
+            numCandies__gt=F('candiesToEvolve')
+        )
 
 
 class DetailView(generic.DetailView):
