@@ -35,6 +35,16 @@ class EvolveView(generic.ListView):
         )
 
 
+class EvolveFromView(generic.ListView):
+    template_name = 'poketracker/index.html'
+
+    def get_queryset(self):
+        return Pokemon.objects.all().filter(
+            numCandies__gte=F('candiesToEvolve'),
+            evolvesFrom__numInBag__gte=1
+        ).order_by('evolvesFrom')
+
+
 class EvolveNewView(generic.ListView):
     template_name = 'poketracker/index.html'
 
@@ -44,6 +54,17 @@ class EvolveNewView(generic.ListView):
             numCandies__gte=F('candiesToEvolve'),
             evolvesFrom__numInBag__gte=1
         )
+
+
+class EvolveFromNewView(generic.ListView):
+    template_name = 'poketracker/index.html'
+
+    def get_queryset(self):
+        return Pokemon.objects.all().filter(
+            caught=False,
+            numCandies__gte=F('candiesToEvolve'),
+            evolvesFrom__numInBag__gte=1
+        ).order_by('evolvesFrom')
 
 
 class DetailView(generic.DetailView):
