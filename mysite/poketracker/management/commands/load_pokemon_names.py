@@ -72,3 +72,43 @@ class Command(BaseCommand):
                                       candy_pokemon.name +
                                       " candies in bag")
                 i += 1
+
+# check for inconsistencies in candy data entry
+        with open(gamestate) as csv_file:
+            gamestate_reader = csv.reader(csv_file)
+
+            i = 1
+            for row in gamestate_reader:
+                this_pokemon = Pokemon.objects.get(pk=i)
+                correct_candies = this_pokemon.numCandies
+
+                current_pokemon = this_pokemon
+                while(current_pokemon.evolvesFrom is not None):
+                    if(current_pokemon.numCandies !=
+                       current_pokemon.evolvesFrom.numCandies):
+                        if(current_pokemon.numCandies == 0):
+                            correct_candies =\
+                             current_pokemon.evolvesFrom.numCandies
+                        elif(current_pokemon.evolvesFrom.numCandies == 0):
+                            correct_candies =\
+                             current_pokemon.numCandies
+                        else:
+                            self.stderr.write("Candies: " +
+                                              current_pokemon.name +
+                                              ": " +
+                                              current_pokemon.numCandies +
+                                              ", " +
+                                              current_pokemon.evolvesFrom.name +
+                                              ": " +
+                                              current_pokemon.evolvesFrom.numCandies)
+                    current_pokemon = current_pokemon.evolvesFrom
+                current_pokemon = this_pokemon
+                while(current_pokemon.evolvesFrom is not None):
+                    current_pokemon.numCandies = correct_candies
+                    current_pokemon.save()
+                    current_pokemon = current_pokemon.evolvesFrom
+                self.stdout.write(this_pokemon.name +
+                                  ": " +
+                                  str(correct_candies) +
+                                  " candies")
+                i += 1
