@@ -35,7 +35,7 @@ class Command(BaseCommand):
                     name=row[0],
                     candiesToEvolve=row[2]
                 )
-                msg = "Added " + new_pokemon.name.decode('utf-8') + \
+                msg = "Added " + new_pokemon.name + \
                     " to Pokemon database (#" + str(i) + ")"
                 self.stdout.write(msg)
                 i += 1
@@ -51,7 +51,7 @@ class Command(BaseCommand):
                     new_pokemon.evolvesFrom =\
                         Pokemon.objects.get(pk=int(row[1]))
                     new_pokemon.save()
-                    msg = new_pokemon.name.decode('utf-8') + \
+                    msg = new_pokemon.name + \
                         " evolves from " + new_pokemon.evolvesFrom.name
                     self.stdout.write(msg)
                 i += 1
@@ -96,7 +96,7 @@ class Command(BaseCommand):
                         elif(int(row[2]) != 0):
                             self.stderr.write(row[2] +
                                               " " +
-                                              Pokemon.objects.get(pk=i).name.decode('utf-8') +
+                                              Pokemon.objects.get(pk=i).name +
                                               " candies but already saw " +
                                               str(candy.numCandies) +
                                               " " +
