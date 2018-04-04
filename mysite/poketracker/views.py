@@ -30,7 +30,7 @@ class EvolveView(generic.ListView):
 
     def get_queryset(self):
         return Pokemon.objects.all().filter(
-            numCandies__gte=F('candiesToEvolve'),
+            baseEvolution__candy__numCandies__gte=F('candiesToEvolve'),
             evolvesFrom__numInBag__gte=1
         )
 
@@ -40,7 +40,7 @@ class EvolveFromView(generic.ListView):
 
     def get_queryset(self):
         return Pokemon.objects.all().filter(
-            numCandies__gte=F('candiesToEvolve'),
+            baseEvolution__candy__numCandies__gte=F('candiesToEvolve'),
             evolvesFrom__numInBag__gte=1
         ).order_by('evolvesFrom')
 
@@ -51,7 +51,7 @@ class EvolveNewView(generic.ListView):
     def get_queryset(self):
         return Pokemon.objects.all().filter(
             caught=False,
-            numCandies__gte=F('candiesToEvolve'),
+            baseEvolution__candy__numCandies__gte=F('candiesToEvolve'),
             evolvesFrom__numInBag__gte=1
         )
 
@@ -62,7 +62,7 @@ class EvolveFromNewView(generic.ListView):
     def get_queryset(self):
         return Pokemon.objects.all().filter(
             caught=False,
-            numCandies__gte=F('candiesToEvolve'),
+            baseEvolution__candy__numCandies__gte=F('candiesToEvolve'),
             evolvesFrom__numInBag__gte=1
         ).order_by('evolvesFrom')
 
