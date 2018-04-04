@@ -11,11 +11,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        def basePokemon(pokemon):
-            baseEvolution = pokemon
-            while baseEvolution.evolvesFrom is not None:
-                baseEvolution = baseEvolution.evolvesFrom
-            return baseEvolution
+        def base_pokemon(pokemon):
+            base_evolution = pokemon
+            while base_evolution.evolves_from is not None:
+                base_evolution = base_evolution.evolves_from
+            return base_evolution
 
         Pokemon.objects.all().delete()
         Candy.objects.all().delete()
@@ -24,6 +24,7 @@ class Command(BaseCommand):
         PROJECT_ROOT = os.path.abspath(os.path.dirname(__name__))
         pokemon_names = PROJECT_ROOT + '/poketracker/static/pokemon.csv'
         gamestate = PROJECT_ROOT + '/poketracker/static/gamestate.csv'
+
 # set Pokemon id, name, candies needed to evolve INTO it
         with open(pokemon_names) as csv_file:
             pokemon_reader = csv.reader(csv_file)
@@ -33,14 +34,14 @@ class Command(BaseCommand):
                 new_pokemon = Pokemon.objects.create(
                     id=i,
                     name=row[0],
-                    candiesToEvolve=row[2]
+                    candies_to_evolve=row[2]
                 )
                 msg = "Added " + new_pokemon.name + \
                     " to Pokemon database (#" + str(i) + ")"
                 self.stdout.write(msg)
                 i += 1
 
-# set evolvesFrom, needs another pass because for example, Pikachu evolves from Pichu
+# set evolves_from, needs second pass because sometimes evolves_from > id
         with open(pokemon_names) as csv_file:
             pokemon_reader = csv.reader(csv_file)
 
@@ -48,26 +49,26 @@ class Command(BaseCommand):
             for row in pokemon_reader:
                 if(row[1]) != "0":
                     new_pokemon = Pokemon.objects.get(pk=i)
-                    new_pokemon.evolvesFrom =\
+                    new_pokemon.evolves_from =\
                         Pokemon.objects.get(pk=int(row[1]))
                     new_pokemon.save()
                     msg = new_pokemon.name + \
-                        " evolves from " + new_pokemon.evolvesFrom.name
+                        " evolves from " + new_pokemon.evolves_from.name
                     self.stdout.write(msg)
                 i += 1
 
-# set baseEvolution
+# set base_evolution
         with open(pokemon_names) as csv_file:
             pokemon_reader = csv.reader(csv_file)
 
             i = 1
             for row in pokemon_reader:
                 new_pokemon = Pokemon.objects.get(pk=i)
-                new_pokemon.baseEvolution =\
-                    basePokemon(new_pokemon)
+                new_pokemon.base_evolution =\
+                    base_pokemon(new_pokemon)
                 new_pokemon.save()
                 msg = new_pokemon.name + \
-                    " base Evolution is " + new_pokemon.baseEvolution.name
+                    " base_evolution is " + new_pokemon.base_evolution.name
                 self.stdout.write(msg)
                 i += 1
 
@@ -83,29 +84,32 @@ class Command(BaseCommand):
                     self.stdout.write(caught_pokemon.name + " caught")
                 if(row[1] != 0):
                     bagged_pokemon = Pokemon.objects.get(pk=i)
-                    bagged_pokemon.numInBag = row[1]
+                    bagged_pokemon.num_in_bag = row[1]
                     bagged_pokemon.save()
-                    self.stdout.write(bagged_pokemon.numInBag + " " +
+                    self.stdout.write(bagged_pokemon.num_in_bag + " " +
                                       bagged_pokemon.name + " in bag")
 
                 try:
-                    candy = Candy.objects.get(candyType=(Pokemon.objects.get(pk=i).baseEvolution))
-                    if(candy.numCandies != int(row[2])):
-                        if(candy.numCandies == 0):
-                            candy.numCandies = int(row[2])
+                    candy = Candy.objects.get(candy_type=(
+                        Pokemon.objects.get(pk=i).base_evolution))
+                    if(candy.num_candies != int(row[2])):
+                        if(candy.num_candies == 0):
+                            candy.num_candies = int(row[2])
                         elif(int(row[2]) != 0):
                             self.stderr.write(row[2] +
                                               " " +
                                               Pokemon.objects.get(pk=i).name +
                                               " candies but already saw " +
-                                              str(candy.numCandies) +
+                                              str(candy.num_candies) +
                                               " " +
-                                              candy.candyType.name +
+                                              candy.candy_type.name +
                                               " candies")
                 except ObjectDoesNotExist:
-                    candy = Candy.objects.create(candyType=(Pokemon.objects.get(pk=i).baseEvolution), numCandies=int(row[2]))
+                    candy = Candy.objects.create(candy_type=(
+                        Pokemon.objects.get(pk=i).base_evolution),
+                        num_candies=int(row[2]))
                 candy.save()
-                self.stdout.write(str(candy.numCandies) + " " +
-                                  candy.candyType.name +
+                self.stdout.write(str(candy.num_candies) + " " +
+                                  candy.candy_type.name +
                                   " candies in bag")
                 i += 1

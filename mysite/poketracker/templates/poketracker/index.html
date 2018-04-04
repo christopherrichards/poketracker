@@ -12,12 +12,12 @@
     (Uncaught)
     {% endif %}
     <br>
-    You have {{ pokemon.numInBag }} of these in your bag.
-    {% if pokemon.evolvesFrom != null %}
+    You have {{ pokemon.num_in_bag }} of these in your bag.
+    {% if pokemon.evolves_from != null %}
         <br>
-        Evolves From: <a href="{% url 'poketracker:detail' pokemon.evolvesFrom.id %}">#{{ pokemon.evolvesFrom.id }} {{ pokemon.evolvesFrom.name }}</a> ({{ pokemon.evolvesFrom.numInBag }} in your bag)
+        Evolves From: <a href="{% url 'poketracker:detail' pokemon.evolves_from.id %}">#{{ pokemon.evolves_from.id }} {{ pokemon.evolves_from.name }}</a> ({{ pokemon.evolves_from.num_in_bag }} in your bag)
         <br>
-        You have {{ pokemon.baseEvolution.candy.numCandies }} of {{ pokemon.candiesToEvolve }} required {{ pokemon.baseEvolution.name}} candies.
+        You have {{ pokemon.base_evolution.candy.num_candies }} of {{ pokemon.candies_to_evolve }} required {{ pokemon.base_evolution.name}} candies.
     {% endif %}
     <p>
 {% endfor %}
