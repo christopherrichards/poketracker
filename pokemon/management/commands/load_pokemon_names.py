@@ -10,6 +10,14 @@ import os.path
 class Command(BaseCommand):
     help = 'Loads Pokemon names into the database'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+                '--no_wipe',
+                action='store_true',
+                dest='no_wipe',
+                help='Don\'t wipe the database before loading the data',
+        )
+
     def handle(self, *args, **options):
 
         def base_pokemon(pokemon):
@@ -18,9 +26,10 @@ class Command(BaseCommand):
                 base_evolution = base_evolution.evolves_from
             return base_evolution
 
-        Pokemon.objects.all().delete()
-        Candy.objects.all().delete()
-        self.stdout.write("Wiped Pokemon database")
+        if(not options['no_wipe']):
+            Pokemon.objects.all().delete()
+            Candy.objects.all().delete()
+            self.stdout.write("Wiped Pokemon database")
 
         PROJECT_ROOT = os.path.abspath(os.path.dirname(__name__))
         pokemon_names = PROJECT_ROOT + '/pokemon/static/pokemon/pokemon.csv'
