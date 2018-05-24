@@ -37,14 +37,14 @@ class Command(BaseCommand):
 
 # set Pokemon id, name, candies needed to evolve INTO it
         with open(pokemon_names) as csv_file:
-            pokemon_reader = csv.reader(csv_file)
+            pokemon_reader = csv.DictReader(csv_file)
 
             i = 1
             for row in pokemon_reader:
                 new_pokemon = Pokemon.objects.create(
                     id=i,
-                    name=row[0],
-                    candies_to_evolve=row[2]
+                    name=row["pokemon_name"],
+                    candies_to_evolve=row["candies_to_evolve"]
                 )
                 msg = "Added " + new_pokemon.name + \
                     " to Pokemon database (#" + str(i) + ")"
@@ -53,14 +53,14 @@ class Command(BaseCommand):
 
 # set evolves_from, needs second pass because sometimes evolves_from > id
         with open(pokemon_names) as csv_file:
-            pokemon_reader = csv.reader(csv_file)
+            pokemon_reader = csv.DictReader(csv_file)
 
             i = 1
             for row in pokemon_reader:
-                if(row[1]) != "0":
+                if(row["evolves_from"]) != "0":
                     new_pokemon = Pokemon.objects.get(pk=i)
                     new_pokemon.evolves_from =\
-                        Pokemon.objects.get(pk=int(row[1]))
+                        Pokemon.objects.get(pk=int(row["evolves_from"]))
                     new_pokemon.save()
                     msg = new_pokemon.name + \
                         " evolves from " + new_pokemon.evolves_from.name
@@ -69,7 +69,7 @@ class Command(BaseCommand):
 
 # set base_evolution
         with open(pokemon_names) as csv_file:
-            pokemon_reader = csv.reader(csv_file)
+            pokemon_reader = csv.DictReader(csv_file)
 
             i = 1
             for row in pokemon_reader:
@@ -83,18 +83,18 @@ class Command(BaseCommand):
                 i += 1
 
         with open(gamestate) as csv_file:
-            gamestate_reader = csv.reader(csv_file)
+            gamestate_reader = csv.DictReader(csv_file)
 
             i = 1
             for row in gamestate_reader:
-                if(row[0] == "TRUE"):
+                if(row["caught"] == "TRUE"):
                     caught_pokemon = Pokemon.objects.get(pk=i)
                     caught_pokemon.caught = True
                     caught_pokemon.save()
                     self.stdout.write(caught_pokemon.name + " caught")
-                if(row[1] != 0):
+                if(row["num_in_bag"] != 0):
                     bagged_pokemon = Pokemon.objects.get(pk=i)
-                    bagged_pokemon.num_in_bag = row[1]
+                    bagged_pokemon.num_in_bag = row["num_in_bag"]
                     bagged_pokemon.save()
                     self.stdout.write(bagged_pokemon.num_in_bag + " " +
                                       bagged_pokemon.name + " in bag")
@@ -102,11 +102,11 @@ class Command(BaseCommand):
                 try:
                     candy = Candy.objects.get(candy_type=(
                         Pokemon.objects.get(pk=i).base_evolution))
-                    if(candy.num_candies != int(row[2])):
+                    if(candy.num_candies != int(row["num_candies"])):
                         if(candy.num_candies == 0):
-                            candy.num_candies = int(row[2])
-                        elif(int(row[2]) != 0):
-                            self.stderr.write(row[2] +
+                            candy.num_candies = int(row["num_candies"])
+                        elif(int(row["num_candies"]) != 0):
+                            self.stderr.write(row["num_candies"] +
                                               " " +
                                               Pokemon.objects.get(pk=i).name +
                                               " candies but already saw " +
@@ -117,7 +117,7 @@ class Command(BaseCommand):
                 except ObjectDoesNotExist:
                     candy = Candy.objects.create(candy_type=(
                         Pokemon.objects.get(pk=i).base_evolution),
-                        num_candies=int(row[2]))
+                        num_candies=int(row["num_candies"]))
                 candy.save()
                 self.stdout.write(str(candy.num_candies) + " " +
                                   candy.candy_type.name +
