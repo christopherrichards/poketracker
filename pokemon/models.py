@@ -24,3 +24,9 @@ class Pokemon(models.Model):
 
     def __str__(self):
         return self.name
+
+    def base_pokemon(self):
+            base_evolution = self
+            while base_evolution.evolves_from is not None:
+                base_evolution = base_evolution.evolves_from
+            return base_evolution

@@ -19,12 +19,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        def base_pokemon(pokemon):
-            base_evolution = pokemon
-            while base_evolution.evolves_from is not None:
-                base_evolution = base_evolution.evolves_from
-            return base_evolution
-
         if(not options['no_wipe']):
             Pokemon.objects.all().delete()
             Candy.objects.all().delete()
@@ -73,7 +67,7 @@ class Command(BaseCommand):
             for row in pokemon_reader:
                 new_pokemon = Pokemon.objects.get(pk=i)
                 new_pokemon.base_evolution =\
-                    base_pokemon(new_pokemon)
+                    new_pokemon.base_pokemon()
                 new_pokemon.save()
                 msg = new_pokemon.name + \
                     " base_evolution is " + new_pokemon.base_evolution.name
