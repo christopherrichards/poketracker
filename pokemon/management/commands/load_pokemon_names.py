@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from django.core.exceptions import ObjectDoesNotExist
 
 from pokemon.models import Pokemon
 from items.models import Candy
@@ -41,10 +40,9 @@ class Command(BaseCommand):
 
             i = 1
             for row in pokemon_reader:
-                new_pokemon = Pokemon.objects.create(
+                new_pokemon, created = Pokemon.objects.get_or_create(
                     id=i,
-                    name=row["pokemon_name"],
-                    candies_to_evolve=row["candies_to_evolve"]
+                    defaults={'name': row["pokemon_name"], 'candies_to_evolve': row["candies_to_evolve"]},
                 )
                 msg = "Added " + new_pokemon.name + \
                     " to Pokemon database (#" + str(i) + ")"
@@ -99,9 +97,11 @@ class Command(BaseCommand):
                     self.stdout.write(bagged_pokemon.num_in_bag + " " +
                                       bagged_pokemon.name + " in bag")
 
-                try:
-                    candy = Candy.objects.get(candy_type=(
-                        Pokemon.objects.get(pk=i).base_evolution))
+                candy, created = Candy.objects.get_or_create(
+                        candy_type=(Pokemon.objects.get(pk=i).base_evolution),
+                        defaults={'num_candies': int(row["num_candies"])},
+                        )
+                if not created:
                     if(candy.num_candies != int(row["num_candies"])):
                         if(candy.num_candies == 0):
                             candy.num_candies = int(row["num_candies"])
@@ -114,10 +114,6 @@ class Command(BaseCommand):
                                               " " +
                                               candy.candy_type.name +
                                               " candies")
-                except ObjectDoesNotExist:
-                    candy = Candy.objects.create(candy_type=(
-                        Pokemon.objects.get(pk=i).base_evolution),
-                        num_candies=int(row["num_candies"]))
                 candy.save()
                 self.stdout.write(str(candy.num_candies) + " " +
                                   candy.candy_type.name +
