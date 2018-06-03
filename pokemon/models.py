@@ -30,3 +30,7 @@ class Pokemon(models.Model):
             while base_evolution.evolves_from is not None:
                 base_evolution = base_evolution.evolves_from
             return base_evolution
+
+    class Meta:
+        verbose_name_plural = "Pokemon"
+        ordering = ['id']
