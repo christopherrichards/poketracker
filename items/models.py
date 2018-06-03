@@ -13,3 +13,7 @@ class Candy(models.Model):
 
     def __str__(self):
         return str(self.num_candies) + " " + self.candy_type.name + " candies"
+
+    class Meta:
+        verbose_name_plural = "Candies"
+        ordering = ['id']
