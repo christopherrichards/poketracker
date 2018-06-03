@@ -9,14 +9,14 @@ class Pokemon(models.Model):
         null=True,
         blank=True,
         default=None,
-        related_name='evolves_from2'
+        related_name='evolves_into'
     )
     base_evolution = models.ForeignKey(
         'self', on_delete=models.CASCADE,
         null=True,
         blank=True,
         default=None,
-        related_name='base_evolution2'
+        related_name='evolutionary_tree'
     )
     candies_to_evolve = models.IntegerField(default=0)
     caught = models.BooleanField(default=False)
