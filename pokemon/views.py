@@ -5,28 +5,24 @@ from .models import Pokemon
 
 
 class IndexView(generic.ListView):
-    template_name = 'pokemon/index.html'
 
     def get_queryset(self):
         return Pokemon.objects.all()
 
 
 class CaughtView(generic.ListView):
-    template_name = 'pokemon/index.html'
 
     def get_queryset(self):
         return Pokemon.objects.all().filter(caught=True)
 
 
 class UncaughtView(generic.ListView):
-    template_name = 'pokemon/index.html'
 
     def get_queryset(self):
         return Pokemon.objects.all().filter(caught=False)
 
 
 class EvolveView(generic.ListView):
-    template_name = 'pokemon/index.html'
 
     def get_queryset(self):
         return Pokemon.objects.all().filter(
@@ -36,7 +32,6 @@ class EvolveView(generic.ListView):
 
 
 class EvolveFromView(generic.ListView):
-    template_name = 'pokemon/index.html'
 
     def get_queryset(self):
         return Pokemon.objects.all().filter(
@@ -46,7 +41,6 @@ class EvolveFromView(generic.ListView):
 
 
 class EvolveNewView(generic.ListView):
-    template_name = 'pokemon/index.html'
 
     def get_queryset(self):
         return Pokemon.objects.all().filter(
@@ -57,7 +51,6 @@ class EvolveNewView(generic.ListView):
 
 
 class EvolveFromNewView(generic.ListView):
-    template_name = 'pokemon/index.html'
 
     def get_queryset(self):
         return Pokemon.objects.all().filter(
@@ -69,4 +62,9 @@ class EvolveFromNewView(generic.ListView):
 
 class DetailView(generic.DetailView):
     model = Pokemon
-    template_name = 'pokemon/detail.html'
+    template_name = 'pokemon/pokemon_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pokemon_list'] = [context['pokemon']]
+        return context
