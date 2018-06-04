@@ -12,7 +12,7 @@ class Candy(models.Model):
     num_candies = models.IntegerField(default=0)
 
     def __str__(self):
-        return str(self.num_candies) + " " + self.candy_type.name + " candies"
+        return '{0} {1} candies'.format(self.num_candies, self.candy_type.name)
 
     class Meta:
         verbose_name_plural = "Candies"

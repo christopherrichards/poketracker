@@ -38,8 +38,7 @@ class Command(BaseCommand):
                     id=i,
                     defaults={'name': row["pokemon_name"], 'candies_to_evolve': row["candies_to_evolve"]},
                 )
-                msg = "Added " + new_pokemon.name + \
-                    " to Pokemon database (#" + str(i) + ")"
+                msg = 'Added {0} to Pokemon database (#{1})'.format(new_pokemon.name, i)
                 self.stdout.write(msg)
                 i += 1
 
@@ -54,8 +53,7 @@ class Command(BaseCommand):
                     new_pokemon.evolves_from =\
                         Pokemon.objects.get(pk=int(row["evolves_from"]))
                     new_pokemon.save()
-                    msg = new_pokemon.name + \
-                        " evolves from " + new_pokemon.evolves_from.name
+                    msg = '{0} evolves from {1}'.format(new_pokemon.name, new_pokemon.evolves_from.name)
                     self.stdout.write(msg)
                 i += 1
 
@@ -69,8 +67,7 @@ class Command(BaseCommand):
                 new_pokemon.base_evolution =\
                     new_pokemon.base_pokemon()
                 new_pokemon.save()
-                msg = new_pokemon.name + \
-                    " base_evolution is " + new_pokemon.base_evolution.name
+                msg = '{0} base_evolution is {1}'.format(new_pokemon.name, new_pokemon.base_evolution.name)
                 self.stdout.write(msg)
                 i += 1
 
@@ -83,13 +80,12 @@ class Command(BaseCommand):
                     caught_pokemon = Pokemon.objects.get(pk=i)
                     caught_pokemon.caught = True
                     caught_pokemon.save()
-                    self.stdout.write(caught_pokemon.name + " caught")
+                    self.stdout.write('{0} caught'.format(caught_pokemon.name))
                 if(row["num_in_bag"] != 0):
                     bagged_pokemon = Pokemon.objects.get(pk=i)
                     bagged_pokemon.num_in_bag = row["num_in_bag"]
                     bagged_pokemon.save()
-                    self.stdout.write(bagged_pokemon.num_in_bag + " " +
-                                      bagged_pokemon.name + " in bag")
+                    self.stdout.write('{0} {1} in bag'.format(bagged_pokemon.num_in_bag, bagged_pokemon.name))
 
                 candy, created = Candy.objects.get_or_create(
                         candy_type=(Pokemon.objects.get(pk=i).base_evolution),
@@ -100,16 +96,13 @@ class Command(BaseCommand):
                         if(candy.num_candies == 0):
                             candy.num_candies = int(row["num_candies"])
                         elif(int(row["num_candies"]) != 0):
-                            self.stderr.write(row["num_candies"] +
-                                              " " +
-                                              Pokemon.objects.get(pk=i).name +
-                                              " candies but already saw " +
-                                              str(candy.num_candies) +
-                                              " " +
-                                              candy.candy_type.name +
-                                              " candies")
+                            self.stderr.write('{0} {1} candies but already saw {2} {3} candies'.format(row["num_candies"],
+                                              Pokemon.objects.get(pk=i).name,
+                                              candy.num_candies,
+                                              candy.candy_type.name
+                                              ))
                 candy.save()
-                self.stdout.write(str(candy.num_candies) + " " +
-                                  candy.candy_type.name +
-                                  " candies in bag")
+                self.stdout.write('{0} {1} candies in bag'.format(candy.num_candies,
+                                  candy.candy_type.name)
+                                  )
                 i += 1
