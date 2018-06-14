@@ -17,7 +17,7 @@
         <br>
         Evolves From: <a href="{% url 'pokemon:detail' pokemon.evolves_from.id %}">#{{ pokemon.evolves_from.id }} {{ pokemon.evolves_from.name }}</a> ({{ pokemon.evolves_from.num_in_bag }} in your bag)
         <br>
-        You have {{ pokemon.base_evolution.candy.num_candies }} of {{ pokemon.candies_to_evolve }} required {{ pokemon.base_evolution.name}} candies.
+        You have {{ pokemon.base_evolution.candy.num_owned }} of {{ pokemon.candies_to_evolve }} required {{ pokemon.base_evolution.name}} candies.
     {% endif %}
     <p>
 {% endfor %}
