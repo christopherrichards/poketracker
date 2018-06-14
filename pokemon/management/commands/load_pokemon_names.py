@@ -88,21 +88,21 @@ class Command(BaseCommand,):
                     self.stdout.write('{0} {1} in bag'.format(bagged_pokemon.num_in_bag, bagged_pokemon.name,))
 
                 candy, created = Candy.objects.get_or_create(
-                        candy_type=(Pokemon.objects.get(pk=i,).base_evolution),
-                        defaults={'num_candies': int(row["num_candies"]), },
+                        base_pokemon_type=(Pokemon.objects.get(pk=i,).base_evolution),
+                        defaults={'num_owned': int(row["num_owned"]), },
                         )
                 if not created:
-                    if(candy.num_candies != int(row["num_candies"])):
-                        if(candy.num_candies == 0):
-                            candy.num_candies = int(row["num_candies"])
-                        elif(int(row["num_candies"]) != 0):
-                            self.stderr.write('{0} {1} candies but already saw {2} {3} candies'.format(row["num_candies"],
+                    if(candy.num_owned != int(row["num_owned"])):
+                        if(candy.num_owned == 0):
+                            candy.num_owned = int(row["num_owned"])
+                        elif(int(row["num_owned"]) != 0):
+                            self.stderr.write('{0} {1} candies but already saw {2} {3} candies'.format(row["num_owned"],
                                               Pokemon.objects.get(pk=i).name,
-                                              candy.num_candies,
-                                              candy.candy_type.name,
+                                              candy.num_owned,
+                                              candy.base_pokemon_type.name,
                                               ))
                 candy.save()
-                self.stdout.write('{0} {1} candies in bag'.format(candy.num_candies,
-                                  candy.candy_type.name,)
+                self.stdout.write('{0} {1} candies in bag'.format(candy.num_owned,
+                                  candy.base_pokemon_type.name,)
                                   )
                 i += 1

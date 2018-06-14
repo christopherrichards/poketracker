@@ -58,8 +58,8 @@ class PokemonEvolveViewTests(TestCase,):
             base_evolution=Pokemon.objects.get(name="Bulbasaur",),
             candies_to_evolve=25,)
         Candy.objects.create(
-            candy_type=Pokemon.objects.get(name="Bulbasaur",),
-            num_candies=25,)
+            base_pokemon_type=Pokemon.objects.get(name="Bulbasaur",),
+            num_owned=25,)
         response = self.client.get(reverse('pokemon:evolve',),)
         self.assertEqual(response.status_code, 200,)
         self.assertContains(response, "Ivysaur",)
@@ -75,8 +75,8 @@ class PokemonEvolveViewTests(TestCase,):
             base_evolution=Pokemon.objects.get(name="Bulbasaur",),
             candies_to_evolve=25,)
         Candy.objects.create(
-            candy_type=Pokemon.objects.get(name="Bulbasaur",),
-            num_candies=24,)
+            base_pokemon_type=Pokemon.objects.get(name="Bulbasaur",),
+            num_owned=24,)
         response = self.client.get(reverse('pokemon:evolve',),)
         self.assertEqual(response.status_code, 200,)
         self.assertNotContains(response, "Ivysaur",)
@@ -89,8 +89,8 @@ class PokemonEvolveViewTests(TestCase,):
             base_evolution=Pokemon.objects.get(name="Bulbasaur",),
             candies_to_evolve=25,)
         Candy.objects.create(
-            candy_type=Pokemon.objects.get(name="Bulbasaur",),
-            num_candies=25,)
+            base_pokemon_type=Pokemon.objects.get(name="Bulbasaur",),
+            num_owned=25,)
         response = self.client.get(reverse('pokemon:evolve',),)
         self.assertEqual(response.status_code, 200,)
         self.assertNotContains(response, "Ivysaur",)
@@ -110,8 +110,8 @@ class PokemonEvolveFromViewTests(TestCase,):
             base_evolution=Pokemon.objects.get(name="Pichu",),
             candies_to_evolve=25,)
         Candy.objects.create(
-            candy_type=Pokemon.objects.get(name="Pichu",),
-            num_candies=25,)
+            base_pokemon_type=Pokemon.objects.get(name="Pichu",),
+            num_owned=25,)
         Pokemon.objects.create(
             id=27,
             name="Sandshrew",
@@ -124,8 +124,8 @@ class PokemonEvolveFromViewTests(TestCase,):
             base_evolution=Pokemon.objects.get(name="Sandshrew",),
             candies_to_evolve=50,)
         Candy.objects.create(
-            candy_type=Pokemon.objects.get(name="Sandshrew",),
-            num_candies=50,)
+            base_pokemon_type=Pokemon.objects.get(name="Sandshrew",),
+            num_owned=50,)
         response = self.client.get(reverse('pokemon:evolve-from',),)
         self.assertEqual(response.status_code, 200,)
         self.assertLess(
@@ -148,8 +148,8 @@ class PokemonEvolveNewTests(TestCase,):
             candies_to_evolve=25,
             caught=True,)
         Candy.objects.create(
-            candy_type=Pokemon.objects.get(name="Pichu",),
-            num_candies=25,)
+            base_pokemon_type=Pokemon.objects.get(name="Pichu",),
+            num_owned=25,)
         Pokemon.objects.create(
             id=27,
             name="Sandshrew",
@@ -162,8 +162,8 @@ class PokemonEvolveNewTests(TestCase,):
             base_evolution=Pokemon.objects.get(name="Sandshrew",),
             candies_to_evolve=50,)
         Candy.objects.create(
-            candy_type=Pokemon.objects.get(name="Sandshrew",),
-            num_candies=50,)
+            base_pokemon_type=Pokemon.objects.get(name="Sandshrew",),
+            num_owned=50,)
         response = self.client.get(reverse('pokemon:evolve-from-new',),)
         self.assertEqual(response.status_code, 200,)
         self.assertNotContains(response, "Pikachu",)
